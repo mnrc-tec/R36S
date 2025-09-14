@@ -1,0 +1,484 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Monarch</title>
+    <link rel="icon" href="monarch-pixelated-white.svg" type="image/svg+xml">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Press+Start+2P&display=swap" rel="stylesheet">
+    <!-- Chosen Palette: Retro Neon -->
+    <!-- Application Structure Plan: The website is structured as a single-page application with four distinct, scrollable sections (Hero, Showcase, FAQ, Downloads). This design now places the primary product directly in the hero section for immediate engagement, with the subsequent Showcase section providing a high-level overview of its key features. This revised linear journey is more effective for a single-product brand launch, guiding the user from visual interest to key details, addressing questions, and finally providing support resources. Key interactions like the product color selector and the FAQ accordion are implemented to present information cleanly without overwhelming the user. -->
+    <!-- Visualization & Content Choices: The application uses structured HTML and CSS for information presentation rather than data charts, as it's a marketing site. 1. Product Specs: Goal is to inform. Presented in a two-column definition list for high scannability of technical data. 2. Supported Consoles: Goal is to show breadth of compatibility. Presented as a dynamic tag cloud for visual impact. 3. FAQ: Goal is to organize answers. Presented as an interactive accordion to save space and reduce clutter, allowing users to find information on demand. These choices prioritize clarity and user experience. -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #1a1a2e;
+            color: #e0e0e0;
+        }
+        .font-retro {
+            font-family: 'Press Start 2P', cursive;
+        }
+        .glass-card {
+            background: rgba(23, 23, 39, 0.6);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(147, 51, 234, 0.2);
+        }
+        .neon-glow {
+            box-shadow: 0 0 5px rgba(168, 85, 247, 0.8), 0 0 10px rgba(168, 85, 247, 0.6), 0 0 20px rgba(168, 85, 247, 0.4);
+        }
+        .faq-item .answer {
+            overflow: hidden;
+            padding: 0; /* Set all padding to 0 when closed */
+            margin: 0; /* Ensure no margin is pushing content */
+            display: none; /* Hide completely */
+        }
+        .faq-item .answer p,
+        .faq-item .answer ul {
+            margin: 0; /* Remove default margins from paragraphs and lists */
+            padding: 0; /* Remove default padding from lists */
+        }
+        .faq-item.open .answer {
+            display: block; /* Show when open */
+            padding: 20px; /* Restore padding when open (px-5 pb-5 is 20px) */
+        }
+        .faq-item.open .icon {
+            transform: rotate(45deg);
+        }
+        .icon {
+            transition: transform 0.3s ease-in-out;
+        }
+        .logo-color {
+            filter: brightness(0) invert(1);
+        }
+        #particle-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+        }
+    </style>
+    </style>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="overflow-x-hidden">
+    <div class="small-layout">
+        <canvas id="particle-canvas"></canvas>
+
+    <header class="bg-slate-900/50 backdrop-blur-sm fixed top-0 left-0 right-0 z-50 border-b border-purple-500/20">
+        <div class="container mx-auto px-6 py-4 flex justify-between items-center">
+            <a href="#home" class="flex items-center space-x-2">
+    <span class="font-retro text-2xl text-white hover:text-purple-400 transition-colors">MONARCH</span>
+</a>
+            <nav class="hidden md:flex space-x-8">
+                
+                <a href="#wiki" class="text-white hover:text-purple-400 transition-colors">Wiki</a>
+                <a href="#faq" class="text-white hover:text-purple-400 transition-colors">FAQ</a>
+                <a href="#downloads" class="text-white hover:text-purple-400 transition-colors">Downloads</a>
+            </nav>
+            <button id="mobile-menu-button" class="md:hidden text-white focus:outline-none">
+                <span class="w-6 h-0.5 bg-white block mb-1"></span>
+                <span class="w-6 h-0.5 bg-white block mb-1"></span>
+                <span class="w-6 h-0.5 bg-white block"></span>
+            </button>
+        </div>
+        <div id="mobile-menu" class="hidden md:hidden bg-slate-900/80">
+            
+            <a href="#wiki" class="block text-center py-3 text-white hover:bg-purple-500/20 transition-colors">Wiki</a>
+            <a href="#faq" class="block text-center py-3 text-white hover:bg-purple-500/20 transition-colors">FAQ</a>
+            <a href="#downloads" class="block text-center py-3 text-white hover:bg-purple-500/20 transition-colors">Downloads</a>
+        </div>
+    </header>
+
+    <main class="pt-20 md:pt-0">
+        <section id="home" class="min-h-screen flex items-center justify-center md:h-[calc(100vh-5rem)]">
+            <div class="container mx-auto px-6 grid grid-cols-1 md:grid-cols-2 gap-0 md:gap-8 items-center">
+                <div class="text-center md:text-left">
+                    <h1 class="font-retro text-2xl md:text-5xl text-white mb-2">R36S Handheld</h1>
+                    <p class="text-base md:text-xl text-purple-300 mb-0 md:mb-6">Step back in time with the R36S, a powerful and portable handheld for your favorite retro games.</p>
+                    <div class="flex items-center justify-center md:justify-start space-x-4">
+                        <div class="flex space-x-2">
+                            <button class="w-8 h-8 rounded-full bg-black border-2 border-gray-500 focus:outline-none focus:border-purple-400" data-color="black"></button>
+                            <button class="w-8 h-8 rounded-full bg-purple-600 border-2 border-gray-500 focus:outline-none focus:border-purple-400" data-color="purple"></button>
+                            <button class="w-8 h-8 rounded-full bg-white border-2 border-gray-500 focus:outline-none focus:border-purple-400" data-color="white"></button>
+                        </div>
+                    </div>
+                </div>
+                <div>
+                    <div class="mx-auto max-w-md lg:ml-auto">
+                         <div class="relative flex justify-center md:mb-4">
+                            <img id="product-image" src="r36s-purple.png" alt="R36S Handheld Gaming Device" class="rounded-lg w-3/4 h-auto transform md:scale-90 md:w-full block mx-auto">
+                        </div>
+                        
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        
+
+        <section id="wiki" class="py-20 bg-slate-900/50">
+            <div class="container mx-auto px-6">
+                <h2 class="font-retro text-3xl text-center text-white mb-12">Device Wiki: R36S</h2>
+                <div class="glass-card rounded-2xl p-6 md:p-10 max-w-5xl mx-auto grid md:grid-cols-2 gap-x-12 gap-y-8">
+                    <div class="md:col-span-2">
+                        <p>This section provides a comprehensive overview of the R36S hardware specifications and its vast compatibility. Use this information to understand the device's capabilities and the incredible library of classic games it can run.</p>
+                    </div>
+                    <div>
+                        <h4 class="font-retro text-xl text-white border-b border-purple-500/30 pb-2 mb-4">Key Specifications</h4>
+                        <dl class="text-sm">
+                            <div class="grid grid-cols-2 py-2 border-b border-slate-700/50"><dt class="font-semibold text-purple-300">CPU</dt><dd>RK3326 Quadcore 64-bit 1.5GHz</dd></div>
+                            <div class="grid grid-cols-2 py-2 border-b border-slate-700/50"><dt class="font-semibold text-purple-300">GPU</dt><dd>Mali-G31MP2 520MHz</dd></div>
+                            <div class="grid grid-cols-2 py-2 border-b border-slate-700/50"><dt class="font-semibold text-purple-300">RAM</dt><dd>DDR3L 1GB</dd></div>
+                            <div class="grid grid-cols-2 py-2 border-b border-slate-700/50"><dt class="font-semibold text-purple-300">Screen</dt><dd>3.5″ HD IPS Full-screen 640×480</dd></div>
+                            <div class="grid grid-cols-2 py-2 border-b border-slate-700/50"><dt class="font-semibold text-purple-300">Storage</dt><dd>64GB / 128GB MicroSD</dd></div>
+                            <div class="grid grid-cols-2 py-2 border-b border-slate-700/50"><dt class="font-semibold text-purple-300">Audio</dt><dd>3.5mm Port & Built-in Speaker</dd></div>
+                            <div class="grid grid-cols-2 py-2 border-b border-slate-700/50"><dt class="font-semibold text-purple-300">Battery</dt><dd>3000mAh (~6 hrs gameplay)</dd></div>
+                            
+                        </dl>
+                    </div>
+                    <div>
+                        <h4 class="font-retro text-xl text-white border-b border-purple-500/30 pb-2 mb-4">Supported Consoles</h4>
+                        <div class="flex flex-wrap gap-2 text-xs">
+                            <span class="bg-slate-700 text-purple-300 py-1 px-3 rounded-full">PlayStation</span>
+                            <span class="bg-slate-700 text-purple-300 py-1 px-3 rounded-full">PSP</span>
+                            <span class="bg-slate-700 text-purple-300 py-1 px-3 rounded-full">Nintendo 64</span>
+                            <span class="bg-slate-700 text-purple-300 py-1 px-3 rounded-full">Nintendo DS</span>
+                            <span class="bg-slate-700 text-purple-300 py-1 px-3 rounded-full">Super Nintendo</span>
+                            <span class="bg-slate-700 text-purple-300 py-1 px-3 rounded-full">Dreamcast</span>
+                            <span class="bg-slate-700 text-purple-300 py-1 px-3 rounded-full">PC Engine</span>
+                            <span class="bg-slate-700 text-purple-300 py-1 px-3 rounded-full">Nintendo Entertainment System (NES)</span>
+                            <span class="bg-slate-700 text-purple-300 py-1 px-3 rounded-full">Game Boy</span>
+                            <span class="bg-slate-700 text-purple-300 py-1 px-3 rounded-full">Super Famicom</span>
+                            <span class="bg-slate-700 text-purple-300 py-1 px-3 rounded-full">Game Boy Color</span>
+                            <span class="bg-slate-700 text-purple-300 py-1 px-3 rounded-full">Sega Genesis</span>
+                            <span class="bg-slate-700 text-purple-300 py-1 px-3 rounded-full">Game Gear</span>
+                            <span class="bg-slate-700 text-purple-300 py-1 px-3 rounded-full">Mega Drive</span>
+                            <span class="bg-slate-700 text-purple-300 py-1 px-3 rounded-full">Neo Geo Pocket</span>
+                            <span class="bg-slate-700 text-purple-300 py-1 px-3 rounded-full">Arcade</span>
+                            <span class="bg-slate-700 text-purple-300 py-1 px-3 rounded-full">FinalBurn</span>
+                            <span class="bg-slate-700 text-purple-300 py-1 px-3 rounded-full">MAME</span>
+                            <span class="bg-slate-700 text-purple-300 py-1 px-3 rounded-full">Atari 2600</span>
+                            <span class="bg-slate-700 text-purple-300 py-1 px-3 rounded-full">Atari 5200</span>
+                            <span class="bg-slate-700 text-purple-300 py-1 px-3 rounded-full">Atari 7800</span>
+                            <span class="bg-slate-700 text-purple-300 py-1 px-3 rounded-full">Atari Lynx</span>
+                            <span class="bg-slate-700 text-purple-300 py-1 px-3 rounded-full">CPS-1</span>
+                            <span class="bg-slate-700 text-purple-300 py-1 px-3 rounded-full">CPS-2</span>
+                            <span class="bg-slate-700 text-purple-300 py-1 px-3 rounded-full">CPS-3</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+                <section id="faq" class="py-20">
+            <div class="container mx-auto px-6">
+                <h2 class="font-retro text-3xl text-center text-white mb-4">FAQ</h2>
+                <p class="text-center max-w-2xl mx-auto mb-12">Have questions? We've got answers. Here are some of the most common inquiries we receive about our devices and services. If you don't see your question here, feel free to contact our support team.</p>
+                <div class="max-w-3xl mx-auto space-y-4">
+                    <div class="faq-item glass-card rounded-lg">
+                        <button class="question w-full flex justify-between items-center text-left p-5">
+                            <span class="font-semibold text-lg">What is the R36S Game Console?</span>
+                            <span class="icon text-purple-400 text-2xl font-thin">+</span>
+                        </button>
+                        <div class="answer px-5 pb-5 text-gray-300">
+                            <p>The R36S is an affordable retro handheld console built to emulate a variety of classic gaming systems. It boasts a 3.5-inch IPS display, powerful emulation performance, and runs on the customizable ArkOS operating system.</p>
+                        </div>
+                    </div>
+                    <div class="faq-item glass-card rounded-lg">
+                        <button class="question w-full flex justify-between items-center text-left p-5">
+                            <span class="font-semibold text-lg">What Emulators and Games does the R36S Support?</span>
+                            <span class="icon text-purple-400 text-2xl font-thin">+</span>
+                        </button>
+                        <div class="answer px-5 pb-5 text-gray-300">
+                            <ul>
+                                <li>NES (Nintendo Entertainment System)</li>
+                                <li>SNES (Super Nintendo Entertainment System)</li>
+                                <li>N64 (Nintendo 64)</li>
+                                <li>Game Boy, Game Boy Color, Game Boy Advance</li>
+                                <li>Sega Genesis/Mega Drive</li>
+                                <li>Sega Game Gear</li>
+                                <li>PC Engine/TurboGrafx-16</li>
+                                <li>Neo Geo</li>
+                                <li>PlayStation 1 (PS1)</li>
+                                <li>PlayStation Portable (PSP)</li>
+                                <li>Capcom System 1, 2, and 3 (CPS1, CPS2, CPS3)</li>
+                                <li>MAME (Multiple Arcade Machine Emulator)</li>
+                                <li>Dreamcast (limited performance)</li>
+                                <li>Nintendo DS (with some limitations)</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="faq-item glass-card rounded-lg">
+                        <button class="question w-full flex justify-between items-center text-left p-5">
+                            <span class="font-semibold text-lg">What is the Key Features of the R36S Game Console?</span>
+                            <span class="icon text-purple-400 text-2xl font-thin">+</span>
+                        </button>
+                        <div class="answer px-5 pb-5 text-gray-300">
+                            <ul>
+                                <li>Display: 3.5-inch 640×480 IPS screen</li>
+                                <li>Battery: 3000mAh removable battery with 5-8 hours of playtime</li>
+                                <li>Controls: Standard ABXY buttons, D-pad, two analog sticks, shoulder buttons (R1/L1 and R2/L2)</li>
+                                <li>OS: Runs on ArkOS, a Linux-based operating system</li>
+                                <li>Connectivity: Two USB-C ports, headphone jack, WiFi connectivity via USB-C dongle</li>
+                                <li>Storage: Two MicroSD slots for game and system storage</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="faq-item glass-card rounded-lg">
+                        <button class="question w-full flex justify-between items-center text-left p-5">
+                            <span class="font-semibold text-lg">What Games are pre-loaded on the R36S?</span>
+                            <span class="icon text-purple-400 text-2xl font-thin">+</span>
+                        </button>
+                        <div class="answer px-5 pb-5 text-gray-300">
+                            <p>The R36S usually comes preloaded with thousands of games from a wide range of supported systems, featuring a mix of popular hits and hidden gems. Additionally, users can expand the library by adding their own game ROMs through a MicroSD card.</p>
+                        </div>
+                    </div>
+                    <div class="faq-item glass-card rounded-lg">
+                        <button class="question w-full flex justify-between items-center text-left p-5">
+                            <span class="font-semibold text-lg">Can I add my own Games?</span>
+                            <span class="icon text-purple-400 text-2xl font-thin">+</span>
+                        </button>
+                        <div class="answer px-5 pb-5 text-gray-300">
+                            <p>Yes, you can easily add your own game ROMs to the R36S using a MicroSD card. Just transfer the ROM files into the corresponding console folders on the card, and the games will appear in the main menu for easy access.</p>
+                        </div>
+                    </div>
+                    <div class="faq-item glass-card rounded-lg">
+                        <button class="question w-full flex justify-between items-center text-left p-5">
+                            <span class="font-semibold text-lg">How is the Performance of the R36S handheld?</span>
+                            <span class="icon text-purple-400 text-2xl font-thin">+</span>
+                        </button>
+                        <div class="answer px-5 pb-5 text-gray-300">
+                            <p>The R36S delivers great performance for most retro systems up to the PS1 and PSP era. It handles many N64 and Dreamcast games smoothly, though some titles may experience slowdowns. The device isn't equipped to emulate newer systems, such as PS2, 3DS etc.</p>
+                        </div>
+                    </div>
+                    <div class="faq-item glass-card rounded-lg">
+                        <button class="question w-full flex justify-between items-center text-left p-5">
+                            <span class="font-semibold text-lg">Is the R36S customizable?</span>
+                            <span class="icon text-purple-400 text-2xl font-thin">+</span>
+                        </button>
+                        <div class="answer px-5 pb-5 text-gray-300">
+                            <p>The R36S offers extensive customization through its use of ArkOS. Users can easily update to the latest OS versions, switch to alternative custom firmware, and fine-tune settings for RetroArch and other emulators for a tailored gaming experience.</p>
+                        </div>
+                    </div>
+                    <div class="faq-item glass-card rounded-lg">
+                        <button class="question w-full flex justify-between items-center text-left p-5">
+                            <span class="font-semibold text-lg">Does the R36S have WiFi capabilities?</span>
+                            <span class="icon text-purple-400 text-2xl font-thin">+</span>
+                        </button>
+                        <div class="answer px-5 pb-5 text-gray-300">
+                            <p>The R36S offers WiFi connectivity through a USB-C dongle.<br>(Please note, no WiFi dongle is supplied when purchasing the R36S from our website.)</p>
+                        </div>
+                    </div>
+                    <div class="faq-item glass-card rounded-lg">
+                        <button class="question w-full flex justify-between items-center text-left p-5">
+                            <span class="font-semibold text-lg">Can I save my game progress?</span>
+                            <span class="icon text-purple-400 text-2xl font-thin">+</span>
+                        </button>
+                        <div class="answer px-5 pb-5 text-gray-300">
+                            <p>Absolutely. All emulators on the R36S support save states, which allow you to save your progress at any point in the game, in addition to the original in-game save systems. You can typically access the emulator menu during gameplay to save or load your state.</p>
+                        </div>
+                    </div>
+                    <div class="faq-item glass-card rounded-lg">
+                        <button class="question w-full flex justify-between items-center text-left p-5">
+                            <span class="font-semibold text-lg">Does the R36S support multiplayer?</span>
+                            <span class="icon text-purple-400 text-2xl font-thin">+</span>
+                        </button>
+                        <div class="answer px-5 pb-5 text-gray-300">
+                            <p>The R36S is primarily a single-player handheld device. While some emulators might theoretically support external controllers via a USB-OTG adapter for local multiplayer, it is not an officially supported feature and may require advanced configuration.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="downloads" class="py-20 bg-slate-900/50">
+            <div class="container mx-auto px-6">
+                <h2 class="font-retro text-3xl text-center text-white mb-4">Support & Downloads</h2>
+                 <p class="text-center max-w-2xl mx-auto mb-12">Here you can find essential files and guides for your Monarch devices. This includes the latest firmware for performance improvements, helpful tutorials, and other resources to enhance your retro gaming experience.</p>
+                <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-5xl mx-auto">
+                    <div class="glass-card p-6 rounded-lg text-center hover:border-purple-400 transition-all transform hover:-translate-y-1 md:col-span-2">
+                        <h4 class="font-retro text-xl mb-3">Tutorials</h4>
+                        <p class="text-sm mb-4">Step-by-step guides for setup and customization.</p>
+                        <a href="#" target="_blank" class="inline-block bg-purple-600 text-white font-bold py-2 px-6 rounded-lg hover:bg-purple-700" target="_blank">View Guides</a>
+                    </div>
+                     <div class="glass-card p-6 rounded-lg text-center hover:border-purple-400 transition-all transform hover:-translate-y-1 md:col-span-2 lg:col-span-1">
+                        <h4 class="font-retro text-xl mb-3">Game ROMs</h4>
+                        <p class="text-sm mb-4">Links to community resources for game files.</p>
+                        <a href="https://www.romsgames.net/" target="_blank" class="inline-block bg-purple-600 text-white font-bold py-2 px-6 rounded-lg hover:bg-purple-700" target="_blank">Find ROMs</a>
+                    </div>
+                    <div class="glass-card p-6 rounded-lg hover:border-purple-400 transition-all transform hover:-translate-y-1 md:col-span-2 lg:col-span-3">
+                        <h4 class="font-retro text-xl mb-3 text-center">Firmware Downloads</h4>
+                        <div class="mt-4">
+                            <div class="p-4 flex justify-between items-center border-b border-slate-700/50">
+                                <p class="font-semibold">ArkOS</p>
+                                <a href="https://github.com/AeolusUX/ArkOS-R3XS" target="_blank" class="inline-block bg-purple-600 text-white font-bold py-2 px-4 rounded-lg hover:bg-purple-700" target="_blank">Download</a>
+                            </div>
+                            <div class="p-4 flex justify-between items-center border-b border-slate-700/50">
+                                <p class="font-semibold">MyMinUI</p>
+                                <a href="https://github.com/Turro75/MyMinUI" target="_blank" class="inline-block bg-purple-600 text-white font-bold py-2 px-4 rounded-lg hover:bg-purple-700" target="_blank">Download</a>
+                            </div>
+                            <div class="p-4 flex justify-between items-center border-b border-slate-700/50">
+                                <p class="font-semibold">ROCKNIX</p>
+                                <a href="https://github.com/ROCKNIX/distribution" class="inline-block bg-purple-600 text-white font-bold py-2 px-4 rounded-lg hover:bg-purple-700" target="_blank">Download</a>
+                            </div>
+                            <div class="p-4 flex justify-between items-center border-b border-slate-700/50">
+                                <p class="font-semibold">AmberELEC</p>
+                                <a href="https://github.com/AmberELEC/Amber" target="_blank" target="_blank" class="inline-block bg-purple-600 text-white font-bold py-2 px-4 rounded-lg hover:bg-purple-700">Download</a>
+                            </div>
+                            <div class="p-4 flex justify-between items-center border-b border-slate-700/50">
+                                <p class="font-semibold">ELECPAN4ELEC</p>
+                                <a href="https://github.com/Kegg1701/P4ELEC" target="_blank" target="_blank" class="inline-block bg-purple-600 text-white font-bold py-2 px-4 rounded-lg hover:bg-purple-700">Download</a>
+                            </div>
+                            <div class="p-4 flex justify-between items-center border-b border-slate-700/50">
+                                <p class="font-semibold">UnofficialOS</p>
+                                <a href="https://github.com/RetroGFX/UnofficialOS" target="_blank" target="_blank" class="inline-block bg-purple-600 text-white font-bold py-2 px-4 rounded-lg hover:bg-purple-700">Download</a>
+                            </div>
+                            <div class="p-4 flex justify-between items-center border-b border-slate-700/50">
+                                <p class="font-semibold">AndR36oid (LineageOS)</p>
+                                <a href="https://github.com/andr36oid/releases/releases" target="_blank" target="_blank" target="_blank" target="_blank" class="inline-block bg-purple-600 text-white font-bold py-2 px-4 rounded-lg hover:bg-purple-700">Download</a>
+                            </div>
+                            <div class="p-4 flex justify-between items-center">
+                                <p class="font-semibold">ArkOS for Clones</p>
+                                <a href="https://github.com/AeolusUX/ArkOS-K36" target="_blank" target="_blank" target="_blank" class="inline-block bg-purple-600 text-white font-bold py-2 px-4 rounded-lg hover:bg-purple-700">Download</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="text-center mt-12">
+                    <p class="text-xs text-gray-400 max-w-2xl mx-auto">Disclaimer: Monarch Gaming does not host or distribute copyrighted game ROMs. Users are responsible for ensuring they have the legal right to download and play any game files. Please support game developers and publishers by purchasing official copies of their games.</p>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="border-t border-purple-500/20 py-8">
+        <div class="container mx-auto px-6 text-center text-gray-400 text-sm">
+            <img src="monarch-pixelated-white.svg" alt="Monarch Logo" class="h-8 mx-auto mb-4">
+            <p>&copy; 2024 Monarch Gaming. All Rights Reserved.</p>
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const mobileMenuButton = document.getElementById('mobile-menu-button');
+            const mobileMenu = document.getElementById('mobile-menu');
+
+            mobileMenuButton.addEventListener('click', () => {
+                mobileMenu.classList.toggle('hidden');
+            });
+
+            document.querySelectorAll('#mobile-menu a').forEach(link => {
+                link.addEventListener('click', () => {
+                    mobileMenu.classList.add('hidden');
+                });
+            });
+
+            const faqItems = document.querySelectorAll('.faq-item');
+            faqItems.forEach(item => {
+                const question = item.querySelector('.question');
+                const answer = item.querySelector('.answer'); // Get the answer element
+                question.addEventListener('click', () => {
+                    const currentlyOpen = document.querySelector('.faq-item.open');
+                    if (currentlyOpen && currentlyOpen !== item) {
+                        currentlyOpen.classList.remove('open');
+                        currentlyOpen.querySelector('.answer').style.display = 'none'; // Hide previously open answer
+                    }
+                    item.classList.toggle('open');
+                    if (item.classList.contains('open')) {
+                        answer.style.display = 'block'; // Show current answer
+                    } else {
+                        answer.style.display = 'none'; // Hide current answer
+                    }
+                });
+            });
+
+            const productImage = document.getElementById('product-image');
+            const colorButtons = document.querySelectorAll('[data-color]');
+
+            colorButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    const color = button.dataset.color;
+                    productImage.src = `r36s-${color}.png`;
+                });
+            });
+
+            
+
+            const canvas = document.getElementById('particle-canvas');
+            const ctx = canvas.getContext('2d');
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+
+            let particlesArray;
+
+            const particleCount = 70;
+            const particleColor = 'rgba(168, 85, 247, 0.4)';
+
+            class Particle {
+                constructor(x, y, directionX, directionY, size, color) {
+                    this.x = x;
+                    this.y = y;
+                    this.directionX = directionX;
+                    this.directionY = directionY;
+                    this.size = size;
+                    this.color = color;
+                }
+                draw() {
+                    ctx.beginPath();
+                    ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2, false);
+                    ctx.fillStyle = this.color;
+                    ctx.fill();
+                }
+                update() {
+                    if (this.x > canvas.width || this.x < 0) {
+                        this.directionX = -this.directionX;
+                    }
+                    if (this.y > canvas.height || this.y < 0) {
+                        this.directionY = -this.directionY;
+                    }
+                    this.x += this.directionX;
+                    this.y += this.directionY;
+                    this.draw();
+                }
+            }
+            
+            function init() {
+                particlesArray = [];
+                for (let i = 0; i < particleCount; i++) {
+                    let size = (Math.random() * 2) + 1;
+                    let x = (Math.random() * ((innerWidth - size * 2) - (size * 2)) + size * 2);
+                    let y = (Math.random() * ((innerHeight - size * 2) - (size * 2)) + size * 2);
+                    let directionX = (Math.random() * .4) - .2;
+                    let directionY = (Math.random() * .4) - .2;
+                    
+                    particlesArray.push(new Particle(x, y, directionX, directionY, size, particleColor));
+                }
+            }
+
+            function animate() {
+                requestAnimationFrame(animate);
+                ctx.clearRect(0,0,innerWidth, innerHeight);
+                for (let i = 0; i < particlesArray.length; i++) {
+                    particlesArray[i].update();
+                }
+            }
+
+            init();
+            animate();
+
+            window.addEventListener('resize', () => {
+                canvas.width = innerWidth;
+                canvas.height = innerHeight;
+                init();
+            });
+        });
+    </script>
+</div>
+</body>
+</html>
